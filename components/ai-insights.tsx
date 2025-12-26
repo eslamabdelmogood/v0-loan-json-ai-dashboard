@@ -3,8 +3,19 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, Loader2, AlertTriangle, TrendingUp, FileText, CheckCircle2 } from "lucide-react"
-import { useState } from "react"
+import {
+  Sparkles,
+  Loader2,
+  AlertTriangle,
+  TrendingUp,
+  FileText,
+  CheckCircle2,
+  Volume2,
+  Play,
+  Pause,
+  Square,
+} from "lucide-react"
+import { useState, useRef } from "react"
 
 interface AiInsightsProps {
   data: any
@@ -12,12 +23,16 @@ interface AiInsightsProps {
 
 export function AiInsights({ data }: AiInsightsProps) {
   const [loading, setLoading] = useState(false)
+  const [ttsLoading, setTtsLoading] = useState(false)
   const [activeInsight, setActiveInsight] = useState<string | null>(null)
   const [insightData, setInsightData] = useState<any>(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const generateInsight = async (type: string) => {
     setLoading(true)
     setActiveInsight(type)
+    stopAudio()
 
     try {
       const response = await fetch("/api/generate-insight", {
@@ -38,8 +53,72 @@ export function AiInsights({ data }: AiInsightsProps) {
     }
   }
 
+  const handleTts = async () => {
+    if (!insightData || !insightData.rawText) return
+
+    if (audioRef.current && !audioRef.current.paused) {
+      stopAudio()
+      return
+    }
+
+    setTtsLoading(true)
+    try {
+      const summaryResponse = await fetch("/api/generate-insight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          loanData: data,
+          insightType: "summary-voice",
+          currentInsight: insightData.rawText,
+        }),
+      })
+      const { rawText: summaryText } = await summaryResponse.json()
+
+      const ttsResponse = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: summaryText }),
+      })
+
+      if (!ttsResponse.ok) throw new Error("TTS failed")
+
+      const audioBlob = await ttsResponse.blob()
+      const audioUrl = URL.createObjectURL(audioBlob)
+
+      if (audioRef.current) {
+        audioRef.current.src = audioUrl
+        audioRef.current.play()
+        setIsPlaying(true)
+      }
+    } catch (error) {
+      console.error("[v0] TTS Error:", error)
+    } finally {
+      setTtsLoading(false)
+    }
+  }
+
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+      setIsPlaying(false)
+    }
+  }
+
+  const togglePlayback = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause()
+      } else {
+        audioRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
+
   return (
     <div className="space-y-6">
+      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} className="hidden" />
       <div>
         <h2 className="text-3xl font-bold tracking-tight text-balance">AI Insights</h2>
         <p className="text-muted-foreground mt-1">Powered by Google Gemini AI for banking professionals</p>
@@ -103,16 +182,48 @@ export function AiInsights({ data }: AiInsightsProps) {
       {/* Insight Display */}
       {!loading && insightData && !insightData.error && (
         <Card className="p-6">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-              <Sparkles className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-semibold">{insightData.title}</h3>
-                <Badge variant="secondary">AI Generated</Badge>
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <Sparkles className="h-5 w-5 text-primary" />
               </div>
-              <p className="text-sm text-muted-foreground">{insightData.subtitle}</p>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-lg font-semibold">{insightData.title}</h3>
+                  <Badge variant="secondary">AI Generated</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">{insightData.subtitle}</p>
+              </div>
+            </div>
+
+            {/* Voice Summary Button and Controls */}
+            <div className="flex items-center gap-2">
+              {isPlaying && (
+                <div className="flex items-center gap-1 bg-primary/5 rounded-full px-3 py-1 border border-primary/20">
+                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={togglePlayback}>
+                    {isPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+                  </Button>
+                  <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={stopAudio}>
+                    <Square className="h-3 w-3 fill-current" />
+                  </Button>
+                  <span className="text-[10px] font-medium text-primary animate-pulse uppercase tracking-wider">
+                    Listening
+                  </span>
+                </div>
+              )}
+
+              {!isPlaying && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-2 bg-transparent"
+                  onClick={handleTts}
+                  disabled={ttsLoading}
+                >
+                  {ttsLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Volume2 className="h-4 w-4" />}
+                  Listen to Summary
+                </Button>
+              )}
             </div>
           </div>
 

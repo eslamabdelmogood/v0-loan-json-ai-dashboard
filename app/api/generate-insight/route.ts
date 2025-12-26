@@ -93,6 +93,21 @@ Based on the borrower sector (${loanData.borrower.sector}) and available data, p
 Be conservative and base analysis on sector norms and the provided data.`
         break
 
+      case "summary-voice":
+        prompt = `${systemContext}
+        
+Based on the following loan analysis, generate a short, professional, executive-level summary suitable for text-to-speech. 
+The summary should be approximately 10-20 seconds when spoken (roughly 40-60 words).
+Focus on high-level risk and performance. Do not read raw numbers, table data, or JSON keys.
+Keep it calm and regulator-friendly.
+
+Analysis:
+${request.body ? (await request.json()).currentInsight : ""}
+
+Loan Context:
+${loanSummary}`
+        break
+
       default:
         return NextResponse.json({ error: "Invalid insight type" }, { status: 400 })
     }
@@ -150,6 +165,10 @@ Be conservative and base analysis on sector norms and the provided data.`
       esg: {
         title: "ESG Impact Assessment",
         subtitle: "Environmental, Social, and Governance considerations",
+      },
+      "summary-voice": {
+        title: "Executive Summary",
+        subtitle: "Professional summary suitable for text-to-speech",
       },
     }
 
