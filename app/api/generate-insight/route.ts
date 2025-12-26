@@ -5,7 +5,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "")
 
 export async function POST(request: Request) {
   try {
-    const { loanData, insightType } = await request.json()
+    const body = await request.json()
+    const { loanData, insightType, currentInsight } = body
 
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
     // Create prompts based on insight type
     let prompt = ""
@@ -102,7 +103,7 @@ Focus on high-level risk and performance. Do not read raw numbers, table data, o
 Keep it calm and regulator-friendly.
 
 Analysis:
-${request.body ? (await request.json()).currentInsight : ""}
+${currentInsight || "No analysis provided"}
 
 Loan Context:
 ${loanSummary}`

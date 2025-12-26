@@ -15,7 +15,7 @@ import {
   Pause,
   Square,
 } from "lucide-react"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
 interface AiInsightsProps {
   data: any
@@ -27,7 +27,19 @@ export function AiInsights({ data }: AiInsightsProps) {
   const [activeInsight, setActiveInsight] = useState<string | null>(null)
   const [insightData, setInsightData] = useState<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const synthRef = useRef<SpeechSynthesis | null>(null)
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      synthRef.current = window.speechSynthesis
+    }
+    return () => {
+      if (synthRef.current) {
+        synthRef.current.cancel()
+      }
+    }
+  }, [])
 
   const generateInsight = async (type: string) => {
     setLoading(true)
@@ -54,15 +66,17 @@ export function AiInsights({ data }: AiInsightsProps) {
   }
 
   const handleTts = async () => {
-    if (!insightData || !insightData.rawText) return
+    if (!insightData || !insightData.rawText || !synthRef.current) return
 
-    if (audioRef.current && !audioRef.current.paused) {
+    if (isPlaying) {
       stopAudio()
       return
     }
 
     setTtsLoading(true)
     try {
+      synthRef.current.cancel()
+
       const summaryResponse = await fetch("/api/generate-insight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,22 +88,40 @@ export function AiInsights({ data }: AiInsightsProps) {
       })
       const { rawText: summaryText } = await summaryResponse.json()
 
-      const ttsResponse = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: summaryText }),
-      })
+      const cleanText = summaryText.replace(/[*#_~`>]/g, "")
+      const utterance = new SpeechSynthesisUtterance(cleanText)
+      utteranceRef.current = utterance
 
-      if (!ttsResponse.ok) throw new Error("TTS failed")
+      const voices = synthRef.current.getVoices()
+      const preferredVoice =
+        voices.find((v) => v.name.includes("Google US English")) ||
+        voices.find((v) => v.name.includes("Samantha")) ||
+        voices.find((v) => v.lang.startsWith("en-"))
 
-      const audioBlob = await ttsResponse.blob()
-      const audioUrl = URL.createObjectURL(audioBlob)
-
-      if (audioRef.current) {
-        audioRef.current.src = audioUrl
-        audioRef.current.play()
-        setIsPlaying(true)
+      if (preferredVoice) {
+        utterance.voice = preferredVoice
       }
+
+      utterance.pitch = 1
+      utterance.rate = 0.95
+      utterance.volume = 1
+
+      utterance.onstart = () => setIsPlaying(true)
+      utterance.onend = () => {
+        setIsPlaying(false)
+        utteranceRef.current = null
+      }
+      utterance.onerror = (event) => {
+        if (event.error === "interrupted") {
+          console.log("[v0] Speech interrupted intentionally")
+          return
+        }
+        console.error("[v0] Speech Synthesis Error:", event)
+        setIsPlaying(false)
+        utteranceRef.current = null
+      }
+
+      synthRef.current.speak(utterance)
     } catch (error) {
       console.error("[v0] TTS Error:", error)
     } finally {
@@ -98,27 +130,33 @@ export function AiInsights({ data }: AiInsightsProps) {
   }
 
   const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
+    if (synthRef.current) {
+      synthRef.current.cancel()
       setIsPlaying(false)
+      utteranceRef.current = null
     }
   }
 
   const togglePlayback = () => {
-    if (audioRef.current) {
+    if (synthRef.current) {
       if (isPlaying) {
-        audioRef.current.pause()
+        synthRef.current.pause()
+        setIsPlaying(false)
       } else {
-        audioRef.current.play()
+        if (synthRef.current.paused) {
+          synthRef.current.resume()
+          setIsPlaying(true)
+        } else if (utteranceRef.current) {
+          synthRef.current.cancel()
+          synthRef.current.speak(utteranceRef.current)
+          setIsPlaying(true)
+        }
       }
-      setIsPlaying(!isPlaying)
     }
   }
 
   return (
     <div className="space-y-6">
-      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} className="hidden" />
       <div>
         <h2 className="text-3xl font-bold tracking-tight text-balance">AI Insights</h2>
         <p className="text-muted-foreground mt-1">Powered by Google Gemini AI for banking professionals</p>

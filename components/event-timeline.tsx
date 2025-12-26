@@ -14,7 +14,29 @@ interface EventTimelineProps {
   events: Event[]
 }
 
-export function EventTimeline({ events }: EventTimelineProps) {
+export function EventTimeline({ events = [] }: EventTimelineProps) {
+  if (!events || !Array.isArray(events) || events.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-balance">Event Timeline</h2>
+          <p className="text-muted-foreground mt-1">No event history available for this loan.</p>
+        </div>
+        <Card className="p-12 flex flex-col items-center justify-center text-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+            <FileText className="h-6 w-6 text-muted-foreground" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">No Activity Found</h3>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              This loan doesn&apos;t have any historical events recorded yet.
+            </p>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
   const getEventIcon = (type: string) => {
     switch (type) {
       case "origination":
