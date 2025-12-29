@@ -12,8 +12,7 @@ It introduces a unified JSON-based loan standard combined with AI-powered insigh
 
 
 
-
-🚀 The Problem:
+## 🚀The Problem:
 
 Loan data today is:
 
