@@ -4,6 +4,14 @@ Standardizing Loan Intelligence. Powering Smarter Lending Decisions.
 
 LoanJSON AI Dashboard is a desktop-first, commercially viable prototype built for the LMA Edge Hackathon.
 It introduces a unified JSON-based loan standard combined with AI-powered insights to simplify how loans are originated, monitored, and risk-assessed across financial institutions.
+
+
+
+
+
+
+
+
 --------------------------------------------------
 
 
@@ -51,7 +59,7 @@ Supports greener lending through automated ESG analysis
 
 ## 🧩 Key Features:
 
-# 1- Unified Loan Overview
+1- Unified Loan Overview
 
 Principal, interest, and borrower details
 
@@ -59,7 +67,7 @@ Covenant compliance tracking
 
 Real-time loan health score
 
-# 2- AI Insights Panel
+2- AI Insights Panel
 
 Risk Summary
 
@@ -69,13 +77,13 @@ ESG Impact Analysis
 
 Optional Voice Summary powered by ElevenLabs
 
-# 3- LoanJSON Viewer
+ 3- LoanJSON Viewer
 
 View, copy, and download standardized LoanJSON
 
 Designed for interoperability between banks, agents, and platforms
 
-# 4- Event Timeline
+ 4- Event Timeline
 
 Clear chronological record of loan lifecycle events
 
