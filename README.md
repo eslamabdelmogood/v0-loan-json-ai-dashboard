@@ -1,10 +1,17 @@
-📘 LoanJSON AI Dashboard:
+## LoanJSON AI Dashboard:
 
 Standardizing Loan Intelligence. Powering Smarter Lending Decisions.
 
 LoanJSON AI Dashboard is a desktop-first, commercially viable prototype built for the LMA Edge Hackathon.
 It introduces a unified JSON-based loan standard combined with AI-powered insights to simplify how loans are originated, monitored, and risk-assessed across financial institutions.
 --------------------------------------------------
+
+
+
+
+
+
+
 
 🚀 The Problem:
 
