@@ -12,6 +12,7 @@ It introduces a unified JSON-based loan standard combined with AI-powered insigh
 
 
 
+
 ## 🚀The Problem:
 
 Loan data today is:
@@ -32,7 +33,7 @@ Poor transparency across the loan lifecycle
 
 ------------------------------------------------------------------------
 
-💡 The Solution:
+## 💡The Solution:
 
 LoanJSON acts as a single source of truth for loan data.
 
@@ -48,9 +49,9 @@ Supports greener lending through automated ESG analysis
 
 ---------------------------------------------------------------------------------------------------------
 
-🧩 Key Features:
+## 🧩 Key Features:
 
-1- Unified Loan Overview
+# 1- Unified Loan Overview
 
 Principal, interest, and borrower details
 
@@ -58,7 +59,7 @@ Covenant compliance tracking
 
 Real-time loan health score
 
-2- AI Insights Panel
+# 2- AI Insights Panel
 
 Risk Summary
 
@@ -68,13 +69,13 @@ ESG Impact Analysis
 
 Optional Voice Summary powered by ElevenLabs
 
-3- LoanJSON Viewer
+# 3- LoanJSON Viewer
 
 View, copy, and download standardized LoanJSON
 
 Designed for interoperability between banks, agents, and platforms
 
-4- Event Timeline
+# 4- Event Timeline
 
 Clear chronological record of loan lifecycle events
 
@@ -84,7 +85,7 @@ Breaches, amendments, and payments at a glance
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-🧠 AI & Technology:
+## 🧠 AI & Technology:
 
 AI Engine: Google Gemini (server-side only)
 
@@ -103,7 +104,7 @@ All AI processing is handled securely via backend API routes to ensure complianc
 
 
 
-📈 Commercial Value:
+## 📈 Commercial Value:
 
 Reduces manual loan monitoring costs
 
@@ -127,7 +128,7 @@ Creates a foundation for industry-wide loan standardization
 
 ---------------------------------------------------------------------------------------------------------------------
 
-How to Try It:
+## How to Try It:
 
 Upload a LoanJSON file
 
@@ -142,7 +143,7 @@ Download or share standardized loan data
 
 ------------------------------------------------------------------------------------------------------------------------
 
-🔮 Future Roadmap:
+## 🔮 Future Roadmap:
 
 Industry-wide LoanJSON standard adoption
 
@@ -160,7 +161,7 @@ Regulatory reporting automation
 
 --------------------------------------------------------------------------------------------------------------
 
-🏆 Why It Matters:
+## 🏆 Why It Matters:
 
 LoanJSON AI Dashboard is not just a demo —
 it’s a practical blueprint for how the loan market can become:
@@ -176,6 +177,6 @@ More sustainable
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-📄 Disclaimer
+## 📄 Disclaimer
 
 This project is a hackathon prototype and does not provide financial advice or credit decisions.
