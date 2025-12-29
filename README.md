@@ -1,11 +1,11 @@
-##📘 LoanJSON AI Dashboard:
+📘 LoanJSON AI Dashboard:
 
 Standardizing Loan Intelligence. Powering Smarter Lending Decisions.
 
 LoanJSON AI Dashboard is a desktop-first, commercially viable prototype built for the LMA Edge Hackathon.
 It introduces a unified JSON-based loan standard combined with AI-powered insights to simplify how loans are originated, monitored, and risk-assessed across financial institutions.
 
-##🚀 The Problem:
+🚀 The Problem:
 
 Loan data today is:
 
@@ -23,7 +23,7 @@ Higher operational risk
 
 Poor transparency across the loan lifecycle
 
-##💡 The Solution:
+💡 The Solution:
 
 LoanJSON acts as a single source of truth for loan data.
 
@@ -37,9 +37,9 @@ Uses AI to generate conservative, regulator-friendly insights
 
 Supports greener lending through automated ESG analysis
 
-##🧩 Key Features:
+🧩 Key Features:
 
-#🔹 Unified Loan Overview
+🔹 Unified Loan Overview
 
 Principal, interest, and borrower details
 
@@ -47,7 +47,7 @@ Covenant compliance tracking
 
 Real-time loan health score
 
-#🔹 AI Insights Panel
+🔹 AI Insights Panel
 
 Risk Summary
 
@@ -57,19 +57,19 @@ ESG Impact Analysis
 
 Optional Voice Summary powered by ElevenLabs
 
-#🔹 LoanJSON Viewer
+🔹 LoanJSON Viewer
 
 View, copy, and download standardized LoanJSON
 
 Designed for interoperability between banks, agents, and platforms
 
-#🔹 Event Timeline
+🔹 Event Timeline
 
 Clear chronological record of loan lifecycle events
 
 Breaches, amendments, and payments at a glance
 
-##🧠 AI & Technology:
+🧠 AI & Technology:
 
 AI Engine: Google Gemini (server-side only)
 
@@ -83,7 +83,7 @@ Data Format: Custom LoanJSON Standard
 
 All AI processing is handled securely via backend API routes to ensure compliance-friendly outputs.
 
-##📈 Commercial Value:
+📈 Commercial Value:
 
 Reduces manual loan monitoring costs
 
@@ -96,11 +96,14 @@ Creates a foundation for industry-wide loan standardization
 🌱 Alignment with LMA Edge Categories
 
 ✔ Digital Loans
+
 ✔ Loan Documents
+
 ✔ Keeping Loans on Track
+
 ✔ Greener Lending
 
-🧪 How to Try It
+How to Try It:
 
 Upload a LoanJSON file
 
@@ -110,7 +113,7 @@ Generate AI insights (text or voice)
 
 Download or share standardized loan data
 
-##🔮 Future Roadmap:
+🔮 Future Roadmap:
 
 Industry-wide LoanJSON standard adoption
 
@@ -122,7 +125,7 @@ Integration with loan trading platforms
 
 Regulatory reporting automation
 
-##🏆 Why It Matters:
+🏆 Why It Matters:
 
 LoanJSON AI Dashboard is not just a demo —
 it’s a practical blueprint for how the loan market can become:
@@ -133,6 +136,6 @@ More efficient
 
 More sustainable
 
-##📄 Disclaimer
+📄 Disclaimer
 
 This project is a hackathon prototype and does not provide financial advice or credit decisions.
