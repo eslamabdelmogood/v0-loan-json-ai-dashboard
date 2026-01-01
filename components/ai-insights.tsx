@@ -14,8 +14,10 @@ import {
   Play,
   Pause,
   Square,
+  Activity,
 } from "lucide-react"
 import { useState, useRef, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 interface AiInsightsProps {
   data: any
@@ -155,12 +157,91 @@ export function AiInsights({ data }: AiInsightsProps) {
     }
   }
 
+  const getRiskAssessment = (score: number) => {
+    if (score >= 80)
+      return {
+        level: "LOW RISK",
+        color: "text-terminal-green",
+        bgColor: "bg-terminal-green/10",
+        borderColor: "border-terminal-green/30",
+        description:
+          "Strong credit quality with minimal default probability. Loan exhibits healthy covenant compliance and stable borrower performance metrics.",
+      }
+    if (score >= 60)
+      return {
+        level: "MODERATE RISK",
+        color: "text-terminal-amber",
+        bgColor: "bg-terminal-amber/10",
+        borderColor: "border-terminal-amber/30",
+        description:
+          "Acceptable risk profile with some areas requiring monitoring. Borrower shows satisfactory performance with manageable covenant compliance challenges.",
+      }
+    return {
+      level: "HIGH RISK",
+      color: "text-terminal-red",
+      bgColor: "bg-terminal-red/10",
+      borderColor: "border-terminal-red/30",
+      description:
+        "Elevated credit risk requiring immediate attention. Multiple covenant breaches and declining trend indicate potential default scenarios within forecast horizon.",
+    }
+  }
+
+  const riskAssessment = getRiskAssessment(data.risk_engine?.health_score || 0)
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold tracking-tight text-balance">AI Insights</h2>
         <p className="text-muted-foreground mt-1">Powered by Google Gemini AI for banking professionals</p>
       </div>
+
+      <Card className={cn("p-6 border", riskAssessment.borderColor, riskAssessment.bgColor)}>
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-card border border-border">
+            <Activity className={cn("h-6 w-6", riskAssessment.color)} />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-3">
+              <h3 className="terminal-heading text-sm text-foreground">Risk Score Analysis</h3>
+              <Badge variant="outline" className={cn("terminal-badge", riskAssessment.color, "border-current")}>
+                {riskAssessment.level}
+              </Badge>
+            </div>
+            <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 mb-4">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Current Score</p>
+                <div className={cn("terminal-number text-4xl font-bold", riskAssessment.color)}>
+                  {data.risk_engine?.health_score || 0}
+                  <span className="text-lg text-muted-foreground font-normal">/100</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                  90-Day Default Probability
+                </p>
+                <div className={cn("terminal-number text-4xl font-bold", riskAssessment.color)}>
+                  {((data.risk_engine?.prediction?.probability_of_default || 0) * 100).toFixed(1)}
+                  <span className="text-lg text-muted-foreground font-normal">%</span>
+                </div>
+              </div>
+            </div>
+            <p className="text-sm text-foreground/80 leading-relaxed">{riskAssessment.description}</p>
+            {data.risk_engine?.prediction?.factors && (
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Key Risk Factors</p>
+                <ul className="grid grid-cols-1 gap-1.5">
+                  {data.risk_engine.prediction.factors.map((factor: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2 text-[11px] text-muted-foreground">
+                      <span className={cn("mt-0.5", riskAssessment.color)}>▸</span>
+                      <span>{factor}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
 
       {/* Action Buttons */}
       <div className="grid grid-cols-3 gap-4">
